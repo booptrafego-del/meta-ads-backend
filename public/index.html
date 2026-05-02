@@ -276,19 +276,20 @@ async function gerarSugestoes() {
   document.getElementById("results-sug").innerHTML = "";
 
   try {
-    const contexto = refData ? `\n\nANÚNCIOS REAIS JÁ ENCONTRADOS:\n${JSON.stringify(refData.players?.slice(0,3))}` : "";
-    const prompt = `Você é especialista em Meta Ads.
-Nicho: ${nicho}
-Produto: ${produto}
-Público: ${publicoSel.join(", ") || "geral"}
-Objetivo: ${objetivoSel || "não informado"}
-Tom: ${tomSel || "não informado"}
-Diferencial: ${document.getElementById("diferencial").value}${contexto}
-
-Crie 3 sugestões de anúncios. Responda SOMENTE JSON sem markdown:
-[{"titulo":"máx 40 chars","headline":"máx 30 chars","copy":"2-4 linhas","cta":"botão","formato_recomendado":"Vídeo/Imagem/Carrossel","inspirado_em":"padrão real","dica_segmentacao":"dica","dica_criativo":"dica visual"}]`;
-
-    const parsed = await callClaude(prompt);
+    const res = await fetch("/gerar-sugestoes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nicho, produto,
+        publico: publicoSel,
+        objetivo: objetivoSel,
+        tom: tomSel,
+        diferencial: document.getElementById("diferencial").value,
+        players: refData ? refData.players : []
+      })
+    });
+    const parsed = await res.json();
+    if (parsed.error) throw new Error(parsed.error);
     renderSugestoes(parsed);
     document.getElementById("result-tabs").style.display = "flex";
     switchResult("sug");
