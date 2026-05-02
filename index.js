@@ -99,6 +99,52 @@ app.get("/validar-token", async (req, res) => {
   }
 });
 
+// Rota para chamadas à IA Claude
+app.post("/claude", async (req, res) => {
+  const { prompt } = req.body;
+  if (!prompt) return res.status(400).json({ error: "Prompt não informado." });
+
+  try {
+    const body = JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 4000,
+      messages: [{ role: "user", content: prompt }]
+    });
+
+    const options = {
+      hostname: "api.anthropic.com",
+      path: "/v1/messages",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+        "Content-Length": Buffer.byteLength(body)
+      }
+    };
+
+    const data = await new Promise((resolve, reject) => {
+      const r = https.request(options, resp => {
+        let d = "";
+        resp.on("data", chunk => d += chunk);
+        resp.on("end", () => {
+          try { resolve(JSON.parse(d)); }
+          catch(e) { reject(new Error("Resposta inválida da IA")); }
+        });
+      });
+      r.on("error", reject);
+      r.write(body);
+      r.end();
+    });
+
+    if (data.error) return res.status(400).json({ error: data.error.message });
+    const text = data.content?.find(b => b.type === "text")?.text || "";
+    res.json({ text });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+}); 
+
 app.listen(PORT, () => {
   console.log(`✅ Servidor rodando na porta ${PORT}`);
 });
