@@ -1,67 +1,60 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Meta Ads Inspiration</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, sans-serif; background: #f4f6fb; min-height: 100vh; }
-  .header { background: #1877f2; padding: 18px 24px; display: flex; align-items: center; gap: 12px; }
-  .header-icon { background: #fff; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-  .header-title { color: #fff; font-weight: 700; font-size: 17px; }
-  .header-sub { color: #c8dcff; font-size: 12px; }
-  .badge-connected { background: #e6f9ed; color: #1a7a3c; border-radius: 8px; padding: 4px 12px; font-size: 12px; font-weight: 700; margin-left: auto; display: none; }
-  .container { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
-  .tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-  .tab { padding: 8px 18px; border-radius: 20px; border: none; cursor: pointer; background: #e4e6eb; color: #555; font-weight: 600; font-size: 13px; }
-  .tab.active { background: #1877f2; color: #fff; }
-  .card { background: #fff; border-radius: 12px; border: 1px solid #eee; padding: 20px; margin-bottom: 16px; }
-  .card-title { font-weight: 700; font-size: 16px; color: #1877f2; margin-bottom: 18px; }
-  .field { margin-bottom: 18px; }
-  .field label { display: block; font-weight: 600; margin-bottom: 4px; color: #333; font-size: 14px; }
-  .field .hint { font-size: 12px; color: #888; margin-bottom: 6px; }
-  .field input { width: 100%; padding: 10px 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; background: #fafafa; color: #222; }
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chip { padding: 6px 14px; border-radius: 20px; border: 1.5px solid #ddd; background: #fff; color: #555; font-weight: 400; cursor: pointer; font-size: 13px; }
-  .chip.active { border-color: #1877f2; background: #e7f0fd; color: #1877f2; font-weight: 600; }
-  .btn { padding: 11px 22px; border-radius: 8px; border: none; cursor: pointer; background: #1877f2; color: #fff; font-weight: 700; font-size: 14px; }
-  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-  .btn.secondary { background: #fff; color: #1877f2; border: 1.5px solid #1877f2; }
-  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
-  .error { background: #fff3f3; border: 1px solid #fcc; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #c00; margin-bottom: 12px; display: none; }
-  .success { background: #e6f9ed; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #1a7a3c; font-weight: 600; margin-top: 12px; display: none; }
-  .insight { background: #e7f0fd; border: 1px solid #c3d8f8; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
-  .insight-title { font-weight: 700; font-size: 13px; color: #1877f2; margin-bottom: 4px; }
-  .insight-text { font-size: 14px; color: #1a3a6e; }
-  .player-card { background: #fff; border-radius: 12px; border: 1px solid #eee; padding: 20px; margin-bottom: 16px; }
-  .player-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-  .player-name { font-weight: 700; font-size: 16px; }
-  .player-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-  .badge { font-size: 11px; background: #e7f0fd; color: #1877f2; border-radius: 6px; padding: 2px 8px; font-weight: 600; }
-  .badge.green { background: #e6f9ed; color: #1a7a3c; }
-  .badge.gray { background: #f0f0f0; color: #444; }
-  .btn-meta { text-decoration: none; background: #1877f2; color: #fff; border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 700; white-space: nowrap; }
-  .copy-real { background: #fffbe6; border: 1px solid #ffe58f; border-radius: 8px; padding: 10px 12px; font-size: 13px; color: #7d5a00; margin-bottom: 12px; }
-  .padroes-title { font-weight: 600; font-size: 13px; margin-bottom: 6px; }
-  .padrao { font-size: 13px; color: #555; padding: 3px 0; display: flex; gap: 6px; }
-  .padrao span { color: #1877f2; }
-  .funciona { background: #f6f8ff; border-radius: 8px; padding: 10px 12px; font-size: 13px; }
-  .ad-card { background: #fff; border-radius: 12px; border: 1px solid #eee; padding: 20px; margin-bottom: 16px; }
-  .ad-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
-  .ad-num { background: #1877f2; color: #fff; border-radius: 6px; padding: 2px 10px; font-size: 12px; font-weight: 700; }
-  .ad-inspira { font-size: 12px; color: #888; margin-bottom: 8px; }
-  .ad-titulo { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
-  .ad-headline { font-weight: 600; font-size: 13px; color: #555; margin-bottom: 8px; }
-  .ad-copy { font-size: 14px; line-height: 1.7; background: #fafafa; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; white-space: pre-line; }
-  .ad-dicas { border-top: 1px solid #f0f0f0; padding-top: 10px; font-size: 12px; color: #555; display: flex; flex-direction: column; gap: 6px; }
-  .btn-copy { margin-top: 10px; background: none; border: 1px solid #ddd; border-radius: 6px; padding: 5px 12px; font-size: 12px; cursor: pointer; color: #555; }
-  .results-title { font-weight: 700; font-size: 16px; margin-bottom: 12px; }
-  #section-token, #section-params { display: none; }
-  #section-token.active, #section-params.active { display: block; }
-  #results-ref, #results-sug { display: none; }
-  #results-ref.active, #results-sug.active { display: block; }
-  .loading { text-align: center; padding: 30px; color: #888; font-size: 14px; display: none; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; background: #f4f6fb; min-height: 100vh; }
+.header { background: #1877f2; padding: 18px 24px; display: flex; align-items: center; gap: 12px; }
+.header-icon { background: #fff; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.header-title { color: #fff; font-weight: 700; font-size: 17px; }
+.header-sub { color: #c8dcff; font-size: 12px; }
+.container { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+.card { background: #fff; border-radius: 12px; border: 1px solid #eee; padding: 20px; margin-bottom: 16px; }
+.card-title { font-weight: 700; font-size: 16px; color: #1877f2; margin-bottom: 18px; }
+.field { margin-bottom: 18px; }
+.field label { display: block; font-weight: 600; margin-bottom: 4px; color: #333; font-size: 14px; }
+.field input { width: 100%; padding: 10px 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; background: #fafafa; color: #222; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 6px 14px; border-radius: 20px; border: 1.5px solid #ddd; background: #fff; color: #555; cursor: pointer; font-size: 13px; }
+.chip.active { border-color: #1877f2; background: #e7f0fd; color: #1877f2; font-weight: 600; }
+.btn { padding: 11px 22px; border-radius: 8px; border: none; cursor: pointer; background: #1877f2; color: #fff; font-weight: 700; font-size: 14px; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn.secondary { background: #fff; color: #1877f2; border: 1.5px solid #1877f2; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+.error { background: #fff3f3; border: 1px solid #fcc; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #c00; margin-bottom: 12px; display: none; }
+.info { background: #fffbe6; border: 1px solid #ffe58f; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #7d5a00; margin-bottom: 12px; display: none; }
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.tab { padding: 8px 18px; border-radius: 20px; border: none; cursor: pointer; background: #e4e6eb; color: #555; font-weight: 600; font-size: 13px; }
+.tab.active { background: #1877f2; color: #fff; }
+.insight { background: #e7f0fd; border: 1px solid #c3d8f8; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+.insight-title { font-weight: 700; font-size: 13px; color: #1877f2; margin-bottom: 4px; }
+.player-card { background: #fff; border-radius: 12px; border: 1px solid #eee; padding: 20px; margin-bottom: 16px; }
+.player-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.player-name { font-weight: 700; font-size: 16px; }
+.badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.badge { font-size: 11px; background: #e7f0fd; color: #1877f2; border-radius: 6px; padding: 2px 8px; font-weight: 600; }
+.badge.green { background: #e6f9ed; color: #1a7a3c; }
+.badge.gray { background: #f0f0f0; color: #444; }
+.btn-meta { text-decoration: none; background: #1877f2; color: #fff; border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.copy-real { background: #fffbe6; border: 1px solid #ffe58f; border-radius: 8px; padding: 10px 12px; font-size: 13px; color: #7d5a00; margin-bottom: 12px; }
+.padroes-title { font-weight: 600; font-size: 13px; margin-bottom: 6px; }
+.padrao { font-size: 13px; color: #555; padding: 3px 0; display: flex; gap: 6px; }
+.funciona { background: #f6f8ff; border-radius: 8px; padding: 10px 12px; font-size: 13px; margin-top: 12px; }
+.ad-card { background: #fff; border-radius: 12px; border: 1px solid #eee; padding: 20px; margin-bottom: 16px; }
+.ad-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.ad-num { background: #1877f2; color: #fff; border-radius: 6px; padding: 2px 10px; font-size: 12px; font-weight: 700; }
+.ad-titulo { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+.ad-headline { font-weight: 600; font-size: 13px; color: #555; margin-bottom: 8px; }
+.ad-copy { font-size: 14px; line-height: 1.7; background: #fafafa; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; white-space: pre-line; }
+.ad-dicas { border-top: 1px solid #f0f0f0; padding-top: 10px; font-size: 12px; color: #555; display: flex; flex-direction: column; gap: 6px; }
+.btn-copy { margin-top: 10px; background: none; border: 1px solid #ddd; border-radius: 6px; padding: 5px 12px; font-size: 12px; cursor: pointer; color: #555; }
+.loading { text-align: center; padding: 30px; color: #888; font-size: 14px; display: none; line-height: 1.8; }
+#results-ref, #results-sug { display: none; }
+#results-ref.active, #results-sug.active { display: block; }
+#result-tabs { display: none; }
 </style>
 </head>
 <body>
@@ -70,42 +63,21 @@
   <div class="header-icon">📣</div>
   <div>
     <div class="header-title">Meta Ads Inspiration</div>
-    <div class="header-sub">Anúncios reais da Ad Library + sugestões com IA</div>
+    <div class="header-sub">Anúncios reais da Ad Library + sugestões inteligentes</div>
   </div>
-  <div class="badge-connected" id="badge-connected">✓ API Conectada</div>
 </div>
 
 <div class="container">
-  <!-- Tabs formulário -->
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('token')">🔑 Token da API</button>
-    <button class="tab" onclick="switchTab('params')" id="tab-params">📋 Parâmetros</button>
-  </div>
+  <div class="card">
+    <div class="card-title">🎯 Parâmetros</div>
 
-  <!-- Token -->
-  <div class="card" id="section-token" style="display:block">
-    <div class="card-title">🔑 Configure seu Token da API</div>
-    <p style="font-size:13px;color:#555;margin-bottom:16px;line-height:1.6">Cole aqui o token de acesso do Graph API Explorer. Com ele o app busca anúncios <strong>reais e ativos</strong> diretamente da Ad Library do Meta.</p>
-    <div class="field">
-      <label>Token de acesso</label>
-      <div class="hint">Token gerado no Graph API Explorer (dura 60 dias se estendido)</div>
-      <input type="password" id="token-input" placeholder="Cole seu token aqui..." />
-    </div>
-    <div class="error" id="token-error"></div>
-    <button class="btn" onclick="salvarToken()">✓ Validar e Salvar Token</button>
-    <div class="success" id="token-success">✅ Token salvo! Vá para "Parâmetros" e comece a buscar.</div>
-  </div>
-
-  <!-- Parâmetros -->
-  <div class="card" id="section-params">
-    <div class="card-title">🎯 Parâmetros de busca</div>
     <div class="field">
       <label>Nicho de mercado *</label>
-      <input type="text" id="nicho" placeholder="Ex: academia, moda feminina, odontologia..." />
+      <input type="text" id="nicho" placeholder="Ex: academia, moda feminina, odontologia..."/>
     </div>
     <div class="field">
       <label>Produto ou serviço</label>
-      <input type="text" id="produto" placeholder="Ex: plano mensal, vestido floral, clareamento..." />
+      <input type="text" id="produto" placeholder="Ex: plano mensal, vestido floral, clareamento..."/>
     </div>
     <div class="field">
       <label>Faixa etária do público</label>
@@ -121,21 +93,24 @@
     </div>
     <div class="field">
       <label>Diferencial</label>
-      <input type="text" id="diferencial" placeholder="Ex: Entrega grátis, 10 anos de experiência..." />
+      <input type="text" id="diferencial" placeholder="Ex: Entrega grátis, 10 anos de experiência..."/>
     </div>
-    <div class="error" id="params-error"></div>
+
+    <div class="error" id="error"></div>
+    <div class="info" id="info"></div>
+
     <div class="btn-row">
-      <button class="btn" onclick="buscarReferencias()" id="btn-buscar">🔍 Buscar Anúncios Reais</button>
-      <button class="btn secondary" onclick="gerarSugestoes()" id="btn-sugestoes">✨ Gerar Sugestões com IA</button>
+      <button class="btn" id="btn-buscar" onclick="buscarReferencias()">🔍 Buscar Anúncios Reais</button>
+      <button class="btn secondary" id="btn-sugestoes" onclick="gerarSugestoes()">✨ Gerar Sugestões</button>
     </div>
   </div>
 
-  <!-- Loading -->
-  <div class="loading" id="loading">⏳ Buscando anúncios reais no Meta...</div>
-  <div class="loading" id="loading-ia">⏳ Gerando sugestões com IA...</div>
+  <div class="loading" id="loading">
+    ⏳ Buscando anúncios reais na Ad Library do Meta...<br>
+    <small>Isso pode levar até 1 minuto. Aguarde!</small>
+  </div>
 
-  <!-- Tabs resultado -->
-  <div class="tabs" id="result-tabs" style="display:none">
+  <div class="tabs" id="result-tabs">
     <button class="tab" id="tab-ref" onclick="switchResult('ref')">🔍 Anúncios Reais</button>
     <button class="tab" id="tab-sug" onclick="switchResult('sug')">✨ Sugestões</button>
   </div>
@@ -145,134 +120,89 @@
 </div>
 
 <script>
-const BACKEND = "";  // mesmo servidor, chamadas relativas
-let tokenSalvo = "";
-let publicoSel = [];
-let objetivoSel = "";
-let tomSel = "";
-let refData = null;
-
 const PUBLICOS = ["18-24 anos","25-34 anos","35-44 anos","45-54 anos","55+ anos"];
 const OBJETIVOS = ["Reconhecimento de marca","Geração de leads","Vendas","Tráfego para site","Engajamento","Instalações de app"];
 const TONS = ["Profissional","Descontraído","Urgente","Emocional","Humorístico","Educativo"];
 
-function renderChips(containerId, options, isMulti, getValue, setValue) {
-  const el = document.getElementById(containerId);
+let publicoSel = [], objetivoSel = "", tomSel = "", refData = null;
+
+function renderChips(id, opts, multi, get, set) {
+  const el = document.getElementById(id);
   el.innerHTML = "";
-  options.forEach(o => {
+  opts.forEach(o => {
     const b = document.createElement("button");
-    b.className = "chip" + (isMulti ? (getValue().includes(o) ? " active" : "") : (getValue() === o ? " active" : ""));
+    b.className = "chip" + (multi ? (get().includes(o) ? " active" : "") : (get() === o ? " active" : ""));
     b.textContent = o;
     b.onclick = () => {
-      if (isMulti) {
-        const v = getValue();
-        setValue(v.includes(o) ? v.filter(x => x !== o) : [...v, o]);
-      } else {
-        setValue(getValue() === o ? "" : o);
-      }
-      renderChips(containerId, options, isMulti, getValue, setValue);
+      if (multi) set(get().includes(o) ? get().filter(x=>x!==o) : [...get(), o]);
+      else set(get() === o ? "" : o);
+      renderChips(id, opts, multi, get, set);
     };
     el.appendChild(b);
   });
 }
 
-renderChips("chips-publico", PUBLICOS, true, () => publicoSel, v => publicoSel = v);
-renderChips("chips-objetivo", OBJETIVOS, false, () => objetivoSel, v => objetivoSel = v);
-renderChips("chips-tom", TONS, false, () => tomSel, v => tomSel = v);
+renderChips("chips-publico", PUBLICOS, true, ()=>publicoSel, v=>publicoSel=v);
+renderChips("chips-objetivo", OBJETIVOS, false, ()=>objetivoSel, v=>objetivoSel=v);
+renderChips("chips-tom", TONS, false, ()=>tomSel, v=>tomSel=v);
 
-function switchTab(t) {
-  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
-  document.getElementById("section-token").style.display = "none";
-  document.getElementById("section-params").style.display = "none";
-  if (t === "token") {
-    document.getElementById("section-token").style.display = "block";
-    document.querySelectorAll(".tab")[0].classList.add("active");
-  } else {
-    document.getElementById("section-params").style.display = "block";
-    document.querySelectorAll(".tab")[1].classList.add("active");
-  }
-}
-
-function salvarToken() {
-  const t = document.getElementById("token-input").value.trim();
-  const err = document.getElementById("token-error");
-  const suc = document.getElementById("token-success");
-  err.style.display = "none"; suc.style.display = "none";
-  if (!t || t.length < 20) { err.textContent = "⚠️ Token inválido. Verifique se copiou corretamente."; err.style.display = "block"; return; }
-  tokenSalvo = t;
-  suc.style.display = "block";
-  document.getElementById("badge-connected").style.display = "block";
-}
-
-function showError(id, msg) {
-  const el = document.getElementById(id);
+function showError(msg) {
+  const el = document.getElementById("error");
   el.textContent = "⚠️ " + msg;
   el.style.display = "block";
 }
+function hideError() { document.getElementById("error").style.display = "none"; }
+function showInfo(msg) {
+  const el = document.getElementById("info");
+  el.textContent = msg;
+  el.style.display = "block";
+}
+function hideInfo() { document.getElementById("info").style.display = "none"; }
 
-function hideError(id) { document.getElementById(id).style.display = "none"; }
-
-async function callClaude(prompt) {
-  const res = await fetch("/claude", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt })
-  });
-  const data = await res.json();
-  if (data.error) throw new Error(data.error);
-  const text = data.text || "";
-  const m = text.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
-  if (!m) throw new Error("Resposta inesperada da IA");
-  return JSON.parse(m[0]);
+function setLoading(on) {
+  document.getElementById("loading").style.display = on ? "block" : "none";
+  document.getElementById("btn-buscar").disabled = on;
+  document.getElementById("btn-sugestoes").disabled = on;
 }
 
 async function buscarReferencias() {
   const nicho = document.getElementById("nicho").value.trim();
-  hideError("params-error");
-  if (!nicho) { showError("params-error", "Preencha o nicho."); return; }
-  if (!tokenSalvo) { showError("params-error", "Configure seu token primeiro."); switchTab("token"); return; }
+  hideError(); hideInfo();
+  if (!nicho) { showError("Preencha o nicho."); return; }
 
-  document.getElementById("loading").style.display = "block";
+  setLoading(true);
   document.getElementById("result-tabs").style.display = "none";
   document.getElementById("results-ref").innerHTML = "";
   document.getElementById("results-ref").className = "";
 
   try {
-    const res = await fetch(`/buscar-anuncios?token=${encodeURIComponent(tokenSalvo)}&nicho=${encodeURIComponent(nicho)}&limite=20`);
+    const res = await fetch(`/buscar-anuncios?nicho=${encodeURIComponent(nicho)}&limite=20`);
     const json = await res.json();
     if (json.error) throw new Error(json.error);
-    const ads = json.ads || [];
 
-    if (ads.length === 0) { showError("params-error", "Nenhum anúncio encontrado para esse nicho no Brasil."); document.getElementById("loading").style.display = "none"; return; }
+    if (!json.players || json.players.length === 0) {
+      showInfo("Nenhum anúncio encontrado para esse nicho. Tente termos mais genéricos.");
+      setLoading(false);
+      return;
+    }
 
-    const prompt = `Você é especialista em Meta Ads. Abaixo estão anúncios REAIS e ATIVOS no Meta para o nicho "${nicho}" no Brasil.
-
-ANÚNCIOS REAIS:
-${JSON.stringify(ads.slice(0,15), null, 2)}
-
-Analise e agrupe por anunciante. Priorize quem tem mais anúncios e roda há mais tempo.
-
-Responda SOMENTE com JSON válido sem markdown:
-{"total_anuncios_encontrados":${ads.length},"players":[{"nome":"page_name","total_anuncios_ativos":"qtd","anuncio_mais_antigo":"data","url_biblioteca":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=NOME&search_type=keyword_unordered","padroes":["p1","p2","p3"],"exemplo_copy":"trecho real","por_que_funciona":"análise"}],"insights":"insight estratégico"}`;
-
-    const parsed = await callClaude(prompt);
-    refData = parsed;
-    renderReferencias(parsed);
+    refData = json;
+    renderReferencias(json);
     document.getElementById("result-tabs").style.display = "flex";
     switchResult("ref");
   } catch(e) {
-    showError("params-error", e.message);
+    showError(e.message);
   }
-  document.getElementById("loading").style.display = "none";
+  setLoading(false);
 }
 
 async function gerarSugestoes() {
   const nicho = document.getElementById("nicho").value.trim();
   const produto = document.getElementById("produto").value.trim();
-  hideError("params-error");
-  if (!nicho && !produto) { showError("params-error", "Preencha o nicho ou produto."); return; }
+  hideError(); hideInfo();
+  if (!nicho && !produto) { showError("Preencha o nicho ou produto."); return; }
 
-  document.getElementById("loading-ia").style.display = "block";
+  setLoading(true);
   document.getElementById("results-sug").innerHTML = "";
 
   try {
@@ -294,31 +224,28 @@ async function gerarSugestoes() {
     document.getElementById("result-tabs").style.display = "flex";
     switchResult("sug");
   } catch(e) {
-    showError("params-error", e.message);
+    showError(e.message);
   }
-  document.getElementById("loading-ia").style.display = "none";
+  setLoading(false);
 }
 
 function renderReferencias(data) {
   const el = document.getElementById("results-ref");
-  let html = "";
-  if (data.insights) html += `<div class="insight"><div class="insight-title">💡 Insight baseado em anúncios reais</div><div class="insight-text">${data.insights}</div></div>`;
+  let html = `<div style="font-weight:700;font-size:13px;color:#1877f2;margin-bottom:12px">✅ ${data.total} anúncios reais encontrados no Meta</div>`;
   (data.players||[]).forEach(p => {
     html += `<div class="player-card">
       <div class="player-header">
         <div>
           <div class="player-name">🏢 ${p.nome}</div>
-          <div class="player-badges">
-            ${p.total_anuncios_ativos ? `<span class="badge green">🔢 ${p.total_anuncios_ativos} ativos</span>` : ""}
-            ${p.anuncio_mais_antigo ? `<span class="badge">⏳ Desde ${p.anuncio_mais_antigo}</span>` : ""}
+          <div class="badges">
+            <span class="badge green">🔢 ${p.total_anuncios_ativos} anúncios ativos</span>
+            <span class="badge">⏳ Desde ${p.anuncio_mais_antigo}</span>
+            ${p.plataformas ? `<span class="badge gray">📱 ${p.plataformas}</span>` : ""}
           </div>
         </div>
         <a href="${p.url_biblioteca}" target="_blank" class="btn-meta">Ver no Meta →</a>
       </div>
-      ${p.exemplo_copy ? `<div class="copy-real"><strong>💬 Copy real:</strong><br>${p.exemplo_copy}</div>` : ""}
-      <div class="padroes-title">📋 Padrões identificados:</div>
-      ${(p.padroes||[]).map(x => `<div class="padrao"><span>•</span>${x}</div>`).join("")}
-      <div class="funciona" style="margin-top:12px"><strong>✅ Por que funciona:</strong> ${p.por_que_funciona}</div>
+      ${p.exemplo_copy && p.exemplo_copy !== "Não disponível" ? `<div class="copy-real"><strong>💬 Copy real:</strong><br>${p.exemplo_copy}</div>` : ""}
     </div>`;
   });
   el.innerHTML = html;
@@ -326,7 +253,7 @@ function renderReferencias(data) {
 
 function renderSugestoes(ads) {
   const el = document.getElementById("results-sug");
-  let html = `<div class="results-title">✨ Sugestões inspiradas em anúncios reais</div>`;
+  let html = `<div style="font-weight:700;font-size:16px;margin-bottom:12px">✨ Sugestões baseadas em anúncios reais</div>`;
   ads.forEach((s, i) => {
     html += `<div class="ad-card">
       <div class="ad-header">
@@ -336,7 +263,7 @@ function renderSugestoes(ads) {
           <span class="badge">${s.cta}</span>
         </div>
       </div>
-      ${s.inspirado_em ? `<div class="ad-inspira">💡 ${s.inspirado_em}</div>` : ""}
+      ${s.inspirado_em ? `<div style="font-size:12px;color:#888;margin-bottom:8px">💡 ${s.inspirado_em}</div>` : ""}
       <div class="ad-titulo">${s.titulo}</div>
       <div class="ad-headline">${s.headline}</div>
       <div class="ad-copy">${s.copy}</div>
@@ -344,7 +271,7 @@ function renderSugestoes(ads) {
         ${s.dica_segmentacao ? `<div><strong>🎯 Segmentação:</strong> ${s.dica_segmentacao}</div>` : ""}
         ${s.dica_criativo ? `<div><strong>🎨 Criativo:</strong> ${s.dica_criativo}</div>` : ""}
       </div>
-      <button class="btn-copy" onclick="navigator.clipboard.writeText('${(s.titulo+'\n'+s.headline+'\n\n'+s.copy+'\n\nCTA: '+s.cta).replace(/'/g,"\\'")}')">📋 Copiar texto</button>
+      <button class="btn-copy" onclick="navigator.clipboard.writeText(decodeURIComponent('${encodeURIComponent(s.titulo+'\n'+s.headline+'\n\n'+s.copy+'\n\nCTA: '+s.cta)}'))">📋 Copiar texto</button>
     </div>`;
   });
   el.innerHTML = html;
