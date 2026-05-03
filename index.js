@@ -55,9 +55,10 @@ app.get("/buscar-anuncios", async (req, res) => {
     const adLibraryUrl = `https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=${encodeURIComponent(nicho)}&search_type=keyword_unordered&media_type=all`;
 
     // Chama o Apify actor de scraping da Ad Library
+    const maxAds = Math.max(parseInt(limite) || 20, 1);
     const runBody = JSON.stringify({
       startUrls: [{ url: adLibraryUrl }],
-      maxAds: parseInt(limite),
+      maxAds: maxAds,
       scrapeAdDetails: false
     });
 
