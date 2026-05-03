@@ -56,14 +56,13 @@ app.get("/buscar-anuncios", async (req, res) => {
 
     const runBody = JSON.stringify({
       urls: [{ url: adLibraryUrl }],
-      count: maxAds,
       "scrapePageAds.activeStatus": "active",
       "scrapePageAds.countryCode": "BR"
     });
 
     const runOptions = {
       hostname: "api.apify.com",
-      path: "/v2/acts/curious_coder~facebook-ads-library-scraper/runs?token=" + APIFY_KEY,
+      path: `/v2/acts/curious_coder~facebook-ads-library-scraper/runs?token=${APIFY_KEY}&maxItems=${maxAds}`,
       method: "POST",
       headers: {
         "Content-Type": "application/json",
