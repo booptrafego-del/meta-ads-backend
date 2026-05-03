@@ -51,20 +51,19 @@ app.get("/buscar-anuncios", async (req, res) => {
   if (!APIFY_KEY) return res.status(500).json({ error: "APIFY_API_KEY não configurada." });
 
   try {
-    // Monta a URL da Ad Library para o Apify scraper
+    const maxAds = Math.max(parseInt(limite) || 20, 1);
     const adLibraryUrl = `https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=${encodeURIComponent(nicho)}&search_type=keyword_unordered&media_type=all`;
 
-    // Chama o Apify actor de scraping da Ad Library
-    const maxAds = Math.max(parseInt(limite) || 20, 1);
     const runBody = JSON.stringify({
-      startUrls: [{ url: adLibraryUrl }],
-      maxAds: maxAds,
-      scrapeAdDetails: false
+      urls: [{ url: adLibraryUrl }],
+      count: maxAds,
+      "scrapePageAds.activeStatus": "active",
+      "scrapePageAds.countryCode": "BR"
     });
 
     const runOptions = {
       hostname: "api.apify.com",
-      path: "/v2/acts/apify~facebook-ads-scraper/runs?token=" + APIFY_KEY,
+      path: "/v2/acts/curious_coder~facebook-ads-library-scraper/runs?token=" + APIFY_KEY,
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -74,6 +73,8 @@ app.get("/buscar-anuncios", async (req, res) => {
 
     // Inicia o run
     const runResult = await httpsRequest(runOptions, runBody);
+    console.log("Apify run result:", JSON.stringify(runResult.data));
+
     if (!runResult.data.data) {
       return res.status(400).json({ error: "Erro ao iniciar scraper: " + JSON.stringify(runResult.data) });
     }
@@ -81,13 +82,14 @@ app.get("/buscar-anuncios", async (req, res) => {
     const runId = runResult.data.data.id;
     const datasetId = runResult.data.data.defaultDatasetId;
 
-    // Aguarda o run terminar (polling)
+    // Aguarda o run terminar (polling a cada 3s, máx 2min)
     let status = "RUNNING";
     let attempts = 0;
     while (status === "RUNNING" || status === "READY") {
       await new Promise(r => setTimeout(r, 3000));
       const statusResult = await fetchJSON(`https://api.apify.com/v2/acts/curious_coder~facebook-ads-library-scraper/runs/${runId}?token=${APIFY_KEY}`);
       status = statusResult.data?.status || "FAILED";
+      console.log(`Run status (${attempts}): ${status}`);
       attempts++;
       if (attempts > 40) { status = "TIMEOUT"; break; }
     }
@@ -97,13 +99,19 @@ app.get("/buscar-anuncios", async (req, res) => {
     }
 
     // Busca os resultados do dataset
-    const items = await fetchJSON(`https://api.apify.com/v2/datasets/${datasetId}/items?token=${APIFY_KEY}&limit=${limite}`);
+    const items = await fetchJSON(`https://api.apify.com/v2/datasets/${datasetId}/items?token=${APIFY_KEY}&limit=${maxAds}`);
+    console.log("Items count:", Array.isArray(items) ? items.length : "não é array");
 
-    // Processa e agrupa por anunciante
     const ads = Array.isArray(items) ? items : [];
+
+    if (ads.length === 0) {
+      return res.json({ total: 0, players: [], ads_brutos: [] });
+    }
+
+    // Agrupa por anunciante
     const porAnunciante = {};
     ads.forEach(ad => {
-      const nome = ad.pageName || ad.page_name || "Desconhecido";
+      const nome = ad.pageName || ad.page_name || ad.advertiserName || "Desconhecido";
       if (!porAnunciante[nome]) porAnunciante[nome] = [];
       porAnunciante[nome].push(ad);
     });
@@ -113,10 +121,10 @@ app.get("/buscar-anuncios", async (req, res) => {
       .slice(0, 6)
       .map(([nome, anuncios]) => {
         const copies = anuncios
-          .map(a => a.adText || a.body || a.ad_creative_body || "")
+          .map(a => a.adText || a.body || a.ad_creative_body || a.text || "")
           .filter(Boolean);
         const datas = anuncios
-          .map(a => a.startDate || a.ad_delivery_start_time)
+          .map(a => a.startDate || a.ad_delivery_start_time || a.createdAt)
           .filter(Boolean)
           .sort();
         return {
@@ -130,8 +138,10 @@ app.get("/buscar-anuncios", async (req, res) => {
         };
       });
 
-    res.json({ total: ads.length, players, ads_brutos: ads.slice(0, 5) });
+    res.json({ total: ads.length, players, ads_brutos: ads.slice(0, 3) });
+
   } catch (err) {
+    console.error("Erro:", err.message);
     res.status(500).json({ error: "Erro interno: " + err.message });
   }
 });
