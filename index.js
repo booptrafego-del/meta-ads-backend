@@ -8,8 +8,24 @@ app.use(express.json());
 app.use(express.static("public"));
 
 const PORT = process.env.PORT || 3001;
+const APIFY_KEY = process.env.APIFY_API_KEY;
 
-// Fetch nativo
+function httpsRequest(options, body) {
+  return new Promise((resolve, reject) => {
+    const req = https.request(options, res => {
+      let data = "";
+      res.on("data", chunk => data += chunk);
+      res.on("end", () => {
+        try { resolve({ status: res.statusCode, data: JSON.parse(data) }); }
+        catch (e) { reject(new Error("Resposta inválida: " + data.slice(0, 200))); }
+      });
+    });
+    req.on("error", reject);
+    if (body) req.write(body);
+    req.end();
+  });
+}
+
 function fetchJSON(url) {
   return new Promise((resolve, reject) => {
     https.get(url, res => {
@@ -17,7 +33,7 @@ function fetchJSON(url) {
       res.on("data", chunk => data += chunk);
       res.on("end", () => {
         try { resolve(JSON.parse(data)); }
-        catch (e) { reject(new Error("Resposta inválida: " + data.slice(0, 100))); }
+        catch (e) { reject(new Error("Resposta inválida")); }
       });
     }).on("error", reject);
   });
@@ -28,62 +44,88 @@ app.get("/", (req, res) => {
   res.json({ status: "ok", message: "Meta Ads Backend funcionando!" });
 });
 
-// Busca anúncios reais na Ad Library do Meta
+// Busca anúncios reais via Apify
 app.get("/buscar-anuncios", async (req, res) => {
-  const { token, nicho, limite = 20 } = req.query;
-  if (!token) return res.status(400).json({ error: "Token não informado." });
+  const { nicho, limite = 20 } = req.query;
   if (!nicho) return res.status(400).json({ error: "Nicho não informado." });
+  if (!APIFY_KEY) return res.status(500).json({ error: "APIFY_API_KEY não configurada." });
 
   try {
-    const params = new URLSearchParams({
-      access_token: token,
-      ad_reached_countries: '["BR"]',
-      ad_active_status: "ACTIVE",
-      search_terms: nicho,
-      fields: [
-        "id", "ad_creative_body", "ad_creative_link_title",
-        "ad_creative_link_description", "page_name", "page_id",
-        "ad_delivery_start_time", "ad_snapshot_url", "publisher_platforms"
-      ].join(","),
-      limit: limite,
-      ad_type: "ALL"
+    // Monta a URL da Ad Library para o Apify scraper
+    const adLibraryUrl = `https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=${encodeURIComponent(nicho)}&search_type=keyword_unordered&media_type=all`;
+
+    // Chama o Apify actor de scraping da Ad Library
+    const runBody = JSON.stringify({
+      startUrls: [{ url: adLibraryUrl }],
+      maxAds: parseInt(limite),
+      scrapeAdDetails: false
     });
 
-    const data = await fetchJSON(`https://graph.facebook.com/v19.0/ads_archive?${params}`);
-    if (data.error) return res.status(400).json({ error: data.error.message });
+    const runOptions = {
+      hostname: "api.apify.com",
+      path: "/v2/acts/apify~facebook-ads-scraper/runs?token=" + APIFY_KEY,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(runBody)
+      }
+    };
 
-    // Ordena por mais antigos primeiro (rodando há mais tempo)
-    const ads = (data.data || []).sort((a, b) =>
-      new Date(a.ad_delivery_start_time || 0) - new Date(b.ad_delivery_start_time || 0)
-    );
+    // Inicia o run
+    const runResult = await httpsRequest(runOptions, runBody);
+    if (!runResult.data.data) {
+      return res.status(400).json({ error: "Erro ao iniciar scraper: " + JSON.stringify(runResult.data) });
+    }
 
-    // Agrupa por anunciante
+    const runId = runResult.data.data.id;
+    const datasetId = runResult.data.data.defaultDatasetId;
+
+    // Aguarda o run terminar (polling)
+    let status = "RUNNING";
+    let attempts = 0;
+    while (status === "RUNNING" || status === "READY") {
+      await new Promise(r => setTimeout(r, 3000));
+      const statusResult = await fetchJSON(`https://api.apify.com/v2/acts/apify~facebook-ads-scraper/runs/${runId}?token=${APIFY_KEY}`);
+      status = statusResult.data?.status || "FAILED";
+      attempts++;
+      if (attempts > 40) { status = "TIMEOUT"; break; }
+    }
+
+    if (status !== "SUCCEEDED") {
+      return res.status(500).json({ error: `Scraper terminou com status: ${status}` });
+    }
+
+    // Busca os resultados do dataset
+    const items = await fetchJSON(`https://api.apify.com/v2/datasets/${datasetId}/items?token=${APIFY_KEY}&limit=${limite}`);
+
+    // Processa e agrupa por anunciante
+    const ads = Array.isArray(items) ? items : [];
     const porAnunciante = {};
     ads.forEach(ad => {
-      const nome = ad.page_name || "Desconhecido";
+      const nome = ad.pageName || ad.page_name || "Desconhecido";
       if (!porAnunciante[nome]) porAnunciante[nome] = [];
       porAnunciante[nome].push(ad);
     });
 
-    // Monta players ordenados por volume
     const players = Object.entries(porAnunciante)
       .sort((a, b) => b[1].length - a[1].length)
       .slice(0, 6)
       .map(([nome, anuncios]) => {
-        const maisAntigo = anuncios[0];
         const copies = anuncios
-          .map(a => a.ad_creative_body || a.ad_creative_link_title || "")
+          .map(a => a.adText || a.body || a.ad_creative_body || "")
           .filter(Boolean);
+        const datas = anuncios
+          .map(a => a.startDate || a.ad_delivery_start_time)
+          .filter(Boolean)
+          .sort();
         return {
           nome,
           total_anuncios_ativos: anuncios.length,
-          anuncio_mais_antigo: maisAntigo.ad_delivery_start_time
-            ? new Date(maisAntigo.ad_delivery_start_time).toLocaleDateString("pt-BR")
-            : "Desconhecido",
+          anuncio_mais_antigo: datas[0] ? new Date(datas[0]).toLocaleDateString("pt-BR") : "Desconhecido",
           url_biblioteca: `https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=${encodeURIComponent(nome)}&search_type=keyword_unordered`,
-          exemplo_copy: copies[0] ? copies[0].slice(0, 200) : "Não disponível",
+          exemplo_copy: copies[0] ? copies[0].slice(0, 300) : "Não disponível",
           copies_disponiveis: copies.slice(0, 5),
-          plataformas: [...new Set(anuncios.flatMap(a => a.publisher_platforms || []))].join(", ")
+          plataformas: [...new Set(anuncios.flatMap(a => a.publisherPlatforms || a.publisher_platforms || []))].join(", ")
         };
       });
 
@@ -93,7 +135,7 @@ app.get("/buscar-anuncios", async (req, res) => {
   }
 });
 
-// Gera sugestões de copy baseadas nos anúncios reais encontrados
+// Gera sugestões baseadas nos players encontrados
 app.post("/gerar-sugestoes", (req, res) => {
   const { nicho, produto, objetivo, tom, diferencial, publico, players } = req.body;
 
@@ -134,10 +176,10 @@ app.post("/gerar-sugestoes", (req, res) => {
     {
       titulo: `${prefixos[1] || "Experimente"} ${nicho}`.slice(0, 40),
       headline: `${diferencial || "Resultado garantido"}`.slice(0, 30),
-      copy: `${copies[0] ? `Inspirado em anúncios reais que estão funcionando agora:\n` : ""}Você está procurando ${produto || nicho}?\n${diferencial ? `Aqui você encontra: ${diferencial}.` : ""}\nJunte-se a quem já escolheu o melhor!`,
+      copy: `${copies[0] ? `Inspirado nos anúncios que estão funcionando agora:\n` : ""}Você está procurando ${produto || nicho}?\n${diferencial ? `Aqui você encontra: ${diferencial}.` : ""}\nJunte-se a quem já escolheu o melhor!`,
       cta,
       formato_recomendado: "Vídeo",
-      inspirado_em: copies[0] ? `Copy real encontrada: "${copies[0].slice(0, 60)}..."` : `Padrão de vídeo dos players de ${nicho}`,
+      inspirado_em: copies[0] ? `Copy real: "${copies[0].slice(0, 60)}..."` : `Padrão de vídeo dos players de ${nicho}`,
       dica_segmentacao: `Use público lookalike de clientes atuais + interesse em ${nicho}`,
       dica_criativo: `Vídeo curto (15s) mostrando antes e depois ou depoimento real`
     },
@@ -147,7 +189,7 @@ app.post("/gerar-sugestoes", (req, res) => {
       copy: `${prefixos[2] || "Descubra"} o que os melhores de ${nicho} já sabem.\n${diferencial ? `🎯 ${diferencial}` : ""}\n${objetivo === "Vendas" ? "⏰ Oferta por tempo limitado — aproveite!" : "Clique e saiba mais!"}`,
       cta,
       formato_recomendado: "Carrossel",
-      inspirado_em: `Estratégia de carrossel usada por ${topPlayer} e outros grandes players`,
+      inspirado_em: `Estratégia de carrossel usada por ${topPlayer}`,
       dica_segmentacao: `Remarketing para quem visitou seu site + público frio por interesse`,
       dica_criativo: `Carrossel com 3-5 cards: problema → solução → prova social → oferta`
     }
