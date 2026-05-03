@@ -86,7 +86,7 @@ app.get("/buscar-anuncios", async (req, res) => {
     let attempts = 0;
     while (status === "RUNNING" || status === "READY") {
       await new Promise(r => setTimeout(r, 3000));
-      const statusResult = await fetchJSON(`https://api.apify.com/v2/acts/apify~facebook-ads-scraper/runs/${runId}?token=${APIFY_KEY}`);
+      const statusResult = await fetchJSON(`https://api.apify.com/v2/acts/curious_coder~facebook-ads-library-scraper/runs/${runId}?token=${APIFY_KEY}`);
       status = statusResult.data?.status || "FAILED";
       attempts++;
       if (attempts > 40) { status = "TIMEOUT"; break; }
