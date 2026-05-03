@@ -44,7 +44,7 @@ app.get("/", (req, res) => {
   res.json({ status: "ok", message: "Meta Ads Backend funcionando!" });
 });
 
-// Busca anúncios reais via Apify
+// Busca anúncios reais via Apify (actor gratuito)
 app.get("/buscar-anuncios", async (req, res) => {
   const { nicho, limite = 20 } = req.query;
   if (!nicho) return res.status(400).json({ error: "Nicho não informado." });
@@ -55,14 +55,15 @@ app.get("/buscar-anuncios", async (req, res) => {
     const adLibraryUrl = `https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=${encodeURIComponent(nicho)}&search_type=keyword_unordered&media_type=all`;
 
     const runBody = JSON.stringify({
-      urls: [{ url: adLibraryUrl }],
-      "scrapePageAds.activeStatus": "active",
-      "scrapePageAds.countryCode": "BR"
+      startUrls: [{ url: adLibraryUrl }],
+      maxResults: maxAds,
+      country: "BR",
+      activeAdsOnly: true
     });
 
     const runOptions = {
       hostname: "api.apify.com",
-      path: `/v2/acts/curious_coder~facebook-ads-library-scraper/runs?token=${APIFY_KEY}&maxItems=${maxAds}`,
+      path: `/v2/acts/s-r~meta-ads-library/runs?token=${APIFY_KEY}`,
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,7 +87,7 @@ app.get("/buscar-anuncios", async (req, res) => {
     let attempts = 0;
     while (status === "RUNNING" || status === "READY") {
       await new Promise(r => setTimeout(r, 3000));
-      const statusResult = await fetchJSON(`https://api.apify.com/v2/acts/curious_coder~facebook-ads-library-scraper/runs/${runId}?token=${APIFY_KEY}`);
+      const statusResult = await fetchJSON(`https://api.apify.com/v2/acts/s-r~meta-ads-library/runs/${runId}?token=${APIFY_KEY}`);
       status = statusResult.data?.status || "FAILED";
       console.log(`Run status (${attempts}): ${status}`);
       attempts++;
